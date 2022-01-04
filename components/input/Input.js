@@ -1,10 +1,29 @@
-import { XIcon ,PhotographIcon} from '@heroicons/react/outline';
-import {useState} from 'react';
-
+import { XIcon ,PhotographIcon, EmojiHappyIcon, ChartBarIcon, CalendarIcon} from '@heroicons/react/outline';
+import {useState,useRef} from 'react';
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
 function Input() {
 
     const [input, setInput] = useState("");
     const [selectedFile, setSelectedFile] =useState(null);
+    const [showEmojis, setShowEmojis] = useState(false);
+
+
+    const filePickerRef = useRef(null);
+
+    const addEmoji = (e) => {
+        let sym = e.unified.split("-");
+        let codesArray = [];
+        sym.forEach((e1) => codesArray.push("0x"+e1));
+        let emoji = String.fromCodePoint(...codesArray);
+        setInput( input + emoji);
+
+    }
+
+
+    const addImageToPost = () => {
+
+    }
     return (
         <div className={`border-b border-x-gray-300 p-3
                         flex space-x-3 overflow-y-scroll
@@ -54,11 +73,49 @@ function Input() {
 
                  <div className="flex items-center justify-between pt-2.5">
                      <div className="flex items-center">
-                         <div className="icon">
+                         <div className="icon" onClick={()=>filePickerRef.current.click()}>
                              <PhotographIcon className="h-[22px] 
                              text-[#1d9bf0] "/>
+
+                             <input 
+                             type="file"
+                             hidden
+                             onChange={addImageToPost}
+                             ref={filePickerRef}/>
                          </div>
+
+                         <div className="icon rotate-90">
+                             <ChartBarIcon className="h-[22px] text-[#1d9bf0]"/>
+                             
+                         </div>
+
+
+                         <div className="icon" 
                          
+                         onClick={() => setShowEmojis(!showEmojis)}
+                         >
+                             <EmojiHappyIcon className="h-[22px] text-[#1d9bf0]"/>
+                         </div>
+                         <div className="icon">
+                             <CalendarIcon className="h-[22px] text-[#1d9bf0]"/>
+                         </div>
+
+                         {showEmojis && (
+                            <Picker
+                             onSelect={addEmoji}
+                            style={{
+                                position: 'absolute',
+                                marginTop: "465px",
+                                marginLeft: -40,
+                                maxWidth: "300px",
+                                borderRadius: "20px",
+                            }}/>
+
+
+                         )}
+                            
+
+
                      </div>
                  </div>
              </div>
