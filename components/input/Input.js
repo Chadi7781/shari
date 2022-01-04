@@ -117,6 +117,21 @@ function Input() {
 
 
                      </div>
+
+                  <button className="
+                     bg-[#1d9bf0] text-white 
+                     transition duration-300 ease-in-out
+
+                     
+                     rounded-full px-4 py-1.5
+                      font-bold shadow-md hover:bg-[#1a8cd8] 
+                      disabled:hover:bg-[#1d9bf0] disabled:opacity-50 
+                      disabled:cursor-default"
+                      disabled={!input.trim() && !selectedFile}
+              
+                   >
+                     Post
+                   </button>
                  </div>
              </div>
             

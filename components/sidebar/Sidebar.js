@@ -46,7 +46,7 @@ function Sidebar() {
             text-lg font-bold shadow-md hover:bg-[#1a8cd8]
             ">
                 
-                Tweet
+                Show more
             </button>
 
             <div className="text-[#d9d9d9] flex items-center
