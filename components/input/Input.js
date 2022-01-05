@@ -7,7 +7,7 @@ function Input() {
     const [input, setInput] = useState("");
     const [selectedFile, setSelectedFile] =useState(null);
     const [showEmojis, setShowEmojis] = useState(false);
-
+    const [loading, setLoading] = useState(false);
 
     const filePickerRef = useRef(null);
 
@@ -21,7 +21,15 @@ function Input() {
     }
 
 
+    const sendPost = () => {
+        if(loading) return;
+        setLoading(true);
+
+
+        
+    }
     const addImageToPost = () => {
+
 
     }
     return (
@@ -35,7 +43,7 @@ function Input() {
              /> 
 
              <div className="w-full divide-y divide-gray-300">
-                 <div className={``}>
+                 <div className={`${selectedFile && "pb-7"} ${input && "space-y-2.5"}`}>
                      <textarea
                        value={input}
                        onChange={(e)=> setInput(e.target.value)}
@@ -128,6 +136,7 @@ function Input() {
                       disabled:hover:bg-[#1d9bf0] disabled:opacity-50 
                       disabled:cursor-default"
                       disabled={!input.trim() && !selectedFile}
+                      onClick={sendPost}
               
                    >
                      Post
