@@ -2,13 +2,15 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Sidebar from '../components/sidebar/Sidebar';
 import Feed from '../components/feed/Feed';
-import { getProviders } from 'next-auth/react';
 
 
 import {getSession, getProviders,useSession} from 'next-auth/react';
 
 
-export default function Home() {
+export default function Home({trendingResults,followResults,providers}) {
+
+
+  if(!session) return <Login providers={providers}/>
 
   return(
     <div className="">
@@ -37,14 +39,14 @@ export async function getServerSideProps(context) {
 
 
   const providers = await getProviders(); //
-  const session = await getSession(context);
+  // const session = await getSession(context);
 
   return {
     props: {
       trendingResults,
       followResults,
       providers,
-      session,
+      // session,
     }
   }
 
