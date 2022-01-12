@@ -5,10 +5,12 @@ import Feed from '../components/feed/Feed';
 
 
 import {getSession, getProviders,useSession} from 'next-auth/react';
+import Login from '../components/Login/Login';
 
 
 export default function Home({trendingResults,followResults,providers}) {
 
+  const {data: session} = useSession();
 
   if(!session) return <Login providers={providers}/>
 
@@ -39,14 +41,14 @@ export async function getServerSideProps(context) {
 
 
   const providers = await getProviders(); //
-  // const session = await getSession(context);
+  const session = await getSession(context);
 
   return {
     props: {
       trendingResults,
       followResults,
       providers,
-      // session,
+      session,
     }
   }
 

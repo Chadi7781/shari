@@ -10,8 +10,17 @@ import {
     UserIcon,
     DotsCircleHorizontalIcon,
     DotsHorizontalIcon,
+    LogoutIcon,
   } from "@heroicons/react/outline";
+
+  import {signOut} from "next-auth/react"
+
+ import {useSession} from 'next-auth/react';
 function Sidebar() {
+
+
+    const {data:session} = useSession();
+
     return (
         <div className="hidden sm:flex flex-col
          items-center xl:items-start
@@ -36,17 +45,24 @@ function Sidebar() {
                 <SidebarLink text="Bookmarks" Icon={BookmarkIcon} />
                 <SidebarLink text="Lists" Icon={ClipboardListIcon} />
                 <SidebarLink text="Profile" Icon={UserIcon} />
+
                 <SidebarLink text="More" Icon={DotsCircleHorizontalIcon} />
-    
+                
+
+            
              
             </div>  
 
             <button className="hidden xl:inline ml-auto bg-[#1d9bf0]
             text-white rounded-full w-56 h-[52px]
             text-lg font-bold shadow-md hover:bg-[#1a8cd8]
-            ">
+            "
+            onClick={()=> signOut(
+                { callbackUrl: "/" }
+           )}
+            >
                 
-                Show more
+                Sign out
             </button>
 
             <div className="text-[#d9d9d9] flex items-center
@@ -54,8 +70,7 @@ function Sidebar() {
             
             ">
                 
-            <img src="
-            https://lh3.googleusercontent.com/ogw/ADea4I4GscrSp6UaHBzAc6Eq80Gp4RFUs7pVSG1IB6hQHQ=s83-c-mo"
+            <img src={session.user.image}
              
                 alt=""
                 className="h-10 w-10 rounded-full xl:mr-2.5"
@@ -64,8 +79,8 @@ function Sidebar() {
             />
 
             <div className="hidden xl:inline leading-5">
-                <h4 className="font-bold text-gray-800">Chadi Troudi</h4>
-                <p className="text-gray-600"> @chadiTroudi</p>
+                <h4 className="font-bold text-gray-800">{session.user.name}</h4>
+                <p className="text-gray-600"> @{session.user.tag}</p>
             </div>
             <DotsHorizontalIcon className="h-5 hidden xl:inline ml-10"/>
 
