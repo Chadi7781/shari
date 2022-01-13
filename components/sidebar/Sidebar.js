@@ -70,7 +70,7 @@ function Sidebar() {
             
             ">
                 
-            <img src={session.user.image}
+                <img src={session.user.image}
              
                 alt=""
                 className="h-10 w-10 rounded-full xl:mr-2.5"
@@ -92,4 +92,4 @@ function Sidebar() {
     )
 }
 
-export default Sidebar
+export default Sidebar 

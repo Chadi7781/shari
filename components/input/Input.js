@@ -18,7 +18,7 @@ function Input() {
 
 
     //USE SESSION FROM NEXT AUTH 
-    // const {data: session} = useSession();
+   const {data: session} = useSession();
 
 
     const [input, setInput] = useState("");
@@ -43,10 +43,10 @@ function Input() {
         setLoading(true);
 
         const docRef = await addDoc(collection(db,"posts"), {
-            // id: session.user.uid,
-            // username: session.user.name,
-            // userImg:  session.user.image,
-            // tag: session.user.tag,
+            id: session.user.uid,
+            username: session.user.name,
+            userImg:  session.user.image,
+            tag: session.user.tag,
             text: input,
             timestamp:   serverTimestamp(),
 
@@ -90,7 +90,9 @@ function Input() {
                         ${loading && "opacity-60"}
     
         `}>
-            <img src="https://lh3.googleusercontent.com/fife/AAWUweUMC2zfpoqMHzmuRK92U5xT0VQGQHXD8YDisDjkJj4rXGGxCw_EzVrKLS32dPowO1wxdgPoluuz00SqVZVnTt-ppAd0GHJnprmMEyyQ-gB-Chy4JzLmB9-wATUHJf5jBFe_NLHTDLTBnbdtO1ayhVQHL6KfuQZFp7-RRo5wTXMdRmYQ4z2eJiZaRnsrsA7rJR1ZjhsBsmmQ4Q4IlasN3twkrEyqor_lY_ThNGCKBhEYCxfn0wZ1Rnu5wtos_xJUnQDP_CXnjIONIJKPWe7f6lzagf7U4HFypN6kh9SWs8EFaQ0yc7Q36tpTZa1rrZTbUlVnIZi580d7Ow1f40bXueLCYOQ0m6DzGHkTasXLFeuVIdWene5nby__OR_b6I9wO5KGtbYhrrCGHZjWH-xjs3QQSdUBKTm7-sDA6jXnJFpOYC7kn3F9FuI-dK-yFNKlwha9WgAZn2Cj_6K8b0GWRtrnhtjRH7hi7djBdHRclTafUPhdqryUJ4oBYwZz86q73L138jyLZnWqFwy_IdYnuxGYvVpcm8sMcnIILcRhVoH4z97xcyX3f2EmQmG7PcWNwsKu1EZ1T5pmt5Q_lpLURP_dcKtg8675kZIxpR60icFvEGhREiQb7jIAQTFUF1L1JO_QzsFzrrF4xCwmMv4tz9X-_dhY1Tpm-lSsxiXkUMXciAdUL00dNpjzanPJT6HuonyhWofAac69swjMgHQ4N8pkna-_3PPHtINdQ-hHcq2SUg=s83-c"
+            
+            <img src={session.user.image}
+            
              alt=""
              className="h-11 w-11 rounded-full cursor-pointer"
              /> 
