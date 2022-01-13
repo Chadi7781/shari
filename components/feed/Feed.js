@@ -5,19 +5,25 @@ import { onSnapshot,collection,query,orderBy} from 'firebase/firestore';
 import Input from '../input/Input';
 import {useState,useEffect} from 'react'
 import {db} from '../../firebase';
+import Post from'../post/Post';
+
 function Feed() {
 
     const [posts, setPosts] = useState([]);
 
 
-    useEffect(() => {
+    useEffect(
+        () => 
          onSnapshot(
             query(collection(db,"posts"),orderBy("timestamp","desc")),
             (snapshot) => {
                 setPosts(snapshot.docs);
             }
-        )
-    },[db]);
+         ),
+         [db]
+    );
+        
+
 
 
 
@@ -41,7 +47,14 @@ function Feed() {
             <Input/>
 
             <div className="pb-72">
-                
+                {posts.map((post) => (
+                    <Post key={post.id} id={post.id}
+                            post={post.data()} 
+                            
+                            />
+                ))}
+            
+            
             </div>
 
 
