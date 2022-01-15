@@ -97,6 +97,10 @@ function Input() {
              className="h-11 w-11 rounded-full cursor-pointer"
              /> 
 
+
+
+
+
              <div className="w-full divide-y divide-gray-300">
                  <div className={`${selectedFile && "pb-7"} ${input && "space-y-2.5"}`}>
                      <textarea
