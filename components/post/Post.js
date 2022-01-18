@@ -1,4 +1,4 @@
-import { DotsHorizontalIcon ,TrashIcon} from "@heroicons/react/outline"
+import { ChartBarIcon, ChatIcon, DotsHorizontalIcon ,ShareIcon,SwitchHorizontalIcon,ThumbUpIcon,TrashIcon} from "@heroicons/react/outline"
 import { useSession} from 'next-auth/react';
 
 import {
@@ -11,19 +11,35 @@ import {
 
 import {db,storage} from '../../firebase';
 import { useRouter } from 'next/router'
-
+import {useState} from 'react';
 function Post({id,post, postPage}) {
     const router = useRouter()
 
 
     const {data:session} = useSession();
 
+    const [postId,setPostId] = useState(null);
+    
+    const [isOpen, setIsOpen] = useState(false);
 
     const deletePost = (e) => {
         
         e.stopPropagation();
         deleteDoc(doc(db,"posts",id));
         router.push("/");
+    }
+
+   
+    const likePost = (e) => {
+        
+    }
+
+    const chatPost = (e) => {
+
+        e.stopPropagation();
+        setPostId(id);
+        setIsOpen(true);
+
     }
 
 
@@ -87,10 +103,24 @@ function Post({id,post, postPage}) {
                 )}
 
                 <img src={`${post?.image}`} alt=""className="rounded-2xl max-h-[700px] object-cover mr-2"/> 
-                <div className={`text-[#6e767d] flex justify-between w-10/12`}>
+                <div className={`text-[#6e767d] flex justify-between w-10/12 ${postPage && "mx-auto" }` }>
+
+
+
+                    <div className="flex items-center space-x-1 group"
+                         onClick={(e) =>chatPost(e)}>
+
+                         <div className="icon group-hover:bg-[#1d9bf0] group-hover:bg-opacity-10">
+
+                            <ChatIcon className="h-5 group-hover:text-[#1d9bf0]"/>    
+                             
+                             
+                         </div>    
+
+                    </div>
 
                    {session.user.uid === post?.id ?(
-                       <div className="flex items-center space-x-1 gorup"
+                       <div className="flex items-center space-x-1 group"
                        onClick={(e)=>{deletePost(e)}}
                        
                        >
@@ -99,10 +129,29 @@ function Post({id,post, postPage}) {
                            </div>
 
                        </div>
-                   ):<div>session not ok</div>}
+                   ):(<div className="flex items-center space-x-1 group">
+                       <div className="icon group-hover:bg-green-500/10">
+                           <SwitchHorizontalIcon className="h-5 group-hover:text-green-500"/>
+                       </div>
+
                        
+                   </div>
+                   
+                   
+                   )}
+                 
+
+                           <div className="icon group">
+                               <ShareIcon className="h-5 group-hover:text-[#1d9bf0]"/>     
+                               
+                           </div>
+                           <div className="icon group">
+                                <ChartBarIcon  className="h-5 group-hover:text-[#1d9bf0]"/>     
+                               
+                           </div>
+                           
+                       </div>
                        
-                    </div>
 
                 
             </div>
