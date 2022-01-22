@@ -9,13 +9,13 @@ import {getStorage} from "firebase/storage";
 
 // Firebase  configuration 
 const firebaseConfig = {
-    apiKey: "AIzaSyCqk1hIr50mS085COBpnQzhRRCLuMTjjds",
-    authDomain: "linktunisia-11b2a.firebaseapp.com",
-    projectId: "linktunisia-11b2a",
-    storageBucket: "linktunisia-11b2a.appspot.com",
-    messagingSenderId: "35655405546",
-    appId: "1:35655405546:web:d54c565b8c00d2ae036c93"
-  };
+  apiKey: "AIzaSyCqk1hIr50mS085COBpnQzhRRCLuMTjjds",
+  authDomain: "linktunisia-11b2a.firebaseapp.com",
+  projectId: "linktunisia-11b2a",
+  storageBucket: "linktunisia-11b2a.appspot.com",
+  messagingSenderId: "35655405546",
+  appId: "1:35655405546:web:d54c565b8c00d2ae036c93"
+};
 
 
   //Initialize firebase

@@ -3,36 +3,39 @@ import Image from 'next/image'
 import Sidebar from '../components/sidebar/Sidebar';
 import Feed from '../components/feed/Feed';
 
+import Welcome from '../components/welcome/Welcome'
 
-import {getSession, getProviders,useSession} from 'next-auth/react';
+import { getSession, getProviders, useSession } from 'next-auth/react';
 import Login from '../components/Login/Login';
+import Modal from '../components/modal/Modal'
 
+export default function Home({ trendingResults, followResults, providers }) {
 
-export default function Home({trendingResults,followResults,providers}) {
+  const { data: session } = useSession();
 
-  const {data: session} = useSession();
+  if (!session) return <Login providers={providers} />
 
-  if(!session) return <Login providers={providers}/>
-
-  return(
+  return (
     <div className="">
       <Head>
         <title>Twitter</title>
-        <link rel="icon" href="/favicon.ico"/>        
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className="bg-white min-h-screen flex max-w-[1500px] mx-auto">
-        <Sidebar/>
-        <Feed/>
+        <Sidebar />
+        <Feed />
+
+        <Modal />
       </main>
     </div>
   );
- 
+
 }
 
 export async function getServerSideProps(context) {
   const trendingResults = await fetch("https://jsonkeeper.com/b/NKEV").then(
-    (res)=> res.json()
+    (res) => res.json()
   );
 
   const followResults = await fetch("https://jsonkeeper.com/b/WWMJ").then(

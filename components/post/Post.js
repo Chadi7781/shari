@@ -1,42 +1,78 @@
-import { ChartBarIcon, ChatIcon, DotsHorizontalIcon ,ShareIcon,SwitchHorizontalIcon,ThumbUpIcon,TrashIcon} from "@heroicons/react/outline"
+import { ChartBarIcon, ChatIcon, DotsHorizontalIcon ,HeartIcon,ShareIcon,SwitchHorizontalIcon
+    
+    ,HeartIconFilled ,TrashIcon} from "@heroicons/react/outline"
 import { useSession} from 'next-auth/react';
 
 import {
     addDoc,
     collection,
-    doc,deleteDoc,
+    doc,deleteDoc,setDoc,
     serverTimestamp,
-    updateDoc
+    updateDoc,
 } from '@firebase/firestore';
 
+import {onSnapshot} from '@firebase/firestore'
 import {db,storage} from '../../firebase';
 import { useRouter } from 'next/router'
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import Moment from "react-moment";
+import { useRecoilState} from 'recoil';
+
+import {modalState,postIdState} from '../../atoms/modalAtom';
 function Post({id,post, postPage}) {
     const router = useRouter()
 
 
     const {data:session} = useSession();
 
-    const [postId,setPostId] = useState(null);
+    const [postId,setPostId] = useRecoilState(postIdState);
     
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useRecoilState(modalState);
+
+    const [comments, setComments] = useState([]);
+
+    const[likes, setLikes] = useState([]);//number of likes (the amount)
+
+    const [liked, setLiked] = useState(false);
 
     const deletePost = (e) => {
         
-        e.stopPropagation();
+        e.stopPropagation();// t7ebslna onclick fi div ly fiha method deletePost
         deleteDoc(doc(db,"posts",id));
         router.push("/");
     }
 
+    useEffect(() => setLiked(likes.findIndex((like) => like.id === session.user?.uid)!== -1),
+    
+    [likes])
+
+    // useEffect(() => 
+    //     onSnapshot(collection(db,"posts",id,"likes"), (snapshot) =>       
+    //         (setLikes(snapshot.docs))
+    //     ),
+    // [db, id]);
+  
    
-    const likePost = (e) => {
+
+
+     //LIKE POST =========================================>   
+     const likePost = async() => {
+        if(liked) {
+            await  deleteDoc(doc(db,"posts",id,"likes",session.user?.uid))
+            
+        }else {
+            await setDoc(doc(db,"posts",id,"likes",session.user?.uid),{
+                username: session.user.name
+                
+            })
+        }
+        
         
     }
 
     const chatPost = (e) => {
 
-        e.stopPropagation();
+        e.stopPropagation();//t7abslna onclick event fi div ely fiha chatPost method
         setPostId(id);
         setIsOpen(true);
 
@@ -77,7 +113,9 @@ function Post({id,post, postPage}) {
                         </div>
                         {" "}.{" "}
                         <span className="hover:underline text-sm sm:text-[15px]">
-                            {/* <Moment> */}
+                            <Moment  fromNow>
+                                {post?.timestamp?.toDate()}
+                            </Moment>
                             </span>
 
                             {!postPage && (
@@ -86,6 +124,8 @@ function Post({id,post, postPage}) {
                                 
                       
                             )}
+
+
                                           <img src={`${post?.image}`} alt=""
                             className="rounded-2xl max-h-[700px] object-cover mr-2"></img>       
 
@@ -102,7 +142,7 @@ function Post({id,post, postPage}) {
                     </p>
                 )}
 
-                <img src={`${post?.image}`} alt=""className="rounded-2xl max-h-[700px] object-cover mr-2"/> 
+                {/* <img src={`${post?.image}`} alt=""className="rounded-2xl max-h-[700px] object-cover mr-2"/>  */}
                 <div className={`text-[#6e767d] flex justify-between w-10/12 ${postPage && "mx-auto" }` }>
 
 
@@ -116,6 +156,12 @@ function Post({id,post, postPage}) {
                              
                              
                          </div>    
+
+                         {comments.length > 0 && (
+                             <span className="group-hover:text-[#1d9bf0 ] text-sm ">
+                                 {comments.length}
+                             </span>
+                         )}
 
                     </div>
 
@@ -139,6 +185,32 @@ function Post({id,post, postPage}) {
                    
                    
                    )}
+
+                   <div
+                       className="flex items-center space-x-1 group"
+                       onClick={(e)=>{e.stopPropagation();likePost(e)}}>
+
+
+                           <div className="icon group-hover:bg-pink-600/10">
+
+                               {liked? (
+                                   <HeartIconFilled className="h-5 text-pink-600"/>
+                               ):(
+                                   <HeartIcon className="h-5 group-hover:text-pink-600"/>
+
+                               )}
+
+
+                   </div>
+                   {likes.length > 0 && (
+                       <span className={`group-hover:text-pink-600 text-sm ${
+                           liked && "text-pink-600"
+                       }`}
+                       >
+                           {likes.length}
+                       </span>
+                   )}
+                   </div>
                  
 
                            <div className="icon group">
