@@ -209,7 +209,7 @@ function Post({id,post, postPage}) {
                            <div className="icon group-hover:bg-pink-600/10">
 
                                {liked? (
-                                   <HeartIconFilled className="h-5 text-pink-600"/>
+                                   <HeartIcon className="h-5 text-pink-600"/>
                                ):(
                                    <HeartIcon className="h-5 group-hover:text-pink-600"/>
 
