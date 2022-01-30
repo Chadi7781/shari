@@ -52,8 +52,8 @@ function PostPage( trendingResults, followResults, providers) {
     return <Login providers={providers} />
   }
 
-  return (<div>
-    <div className="">
+  return (
+    <div>
       <Head>
         <title>{post?.username} on Shari: "{post?.text}"   </title>
         <link rel="icon" href="/favicon.ico" />
@@ -94,7 +94,7 @@ function PostPage( trendingResults, followResults, providers) {
         {isOpen && <Modal />}
       </main>
     </div>
-  </div>);
+  );
 }
 
 export async function getServerSideProps(context) {
