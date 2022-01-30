@@ -6,7 +6,7 @@ import React from 'react';
 
 
 import {Transition, Dialog} from '@headlessui/react';
-import {modalState,postIdState} from '../../atoms/modalAtom'
+import {updatePostState,postIdState} from '../../atoms/modalAtom'
 import {useRecoilState} from 'recoil';
 import {Fragment , useEffect, useState} from 'react'
 import {
@@ -21,15 +21,17 @@ import {db} from "../../firebase"
 import Moment from 'react-moment';
 import { useSession } from 'next-auth/react';
 import { Router, useRouter } from 'next/router';
-function Modal() {
+function UpdatePost() {
 
 
 
 
   const {data :session} = useSession();
-  const [isOpen, setIsOpen] = useRecoilState(modalState);
-  const [post, setPost] = useState(modalState);
+  const [isUpdatePostOpen, setIsUpdatePostOpen] = useRecoilState(updatePostState);
+  const [post, setPost] = useState(postIdState);
   const [comment, setComment]= useState("");
+  
+  const [text, setText]= useState("");
 
   const router = useRouter();
   const [postId, setPostId] = useRecoilState(postIdState);
@@ -42,24 +44,27 @@ function Modal() {
 
 
 
-  const sendComment = async (e) => {
+  
+  const updatePost = async (e) => {
     e.preventDefault();
-    await addDoc(collection(db,"posts",postId,"comments"), {
-      comment:comment,
+    await setDoc(doc(db,"posts",postId), {
+      post:post,
       username: session.user.name,
       tag: session.user.tag,
       userImg: session.user.image,
       timestamp:serverTimestamp()
     });
 
-    setIsOpen(false);
-    setComment("");
+    setIsUpdatePostOpen(false);
+    setText("");
 
     router.push(`/${postId}`);
   }
+
+  
   return (
-    <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog as="div" className="fixed z-50 inset-0 pt-8"  onClose={setIsOpen}>
+    <Transition.Root show={isUpdatePostOpen} as={Fragment}>
+      <Dialog as="div" className="fixed z-50 inset-0 pt-8"  onClose={setIsUpdatePostOpen}>
       <div className="flex items-start justify-center min-h-[800px] sm:min-h-screen pt-4 px-4 pb-20 
       text-center sm:block sm:p-0">
           <Transition.Child
@@ -89,7 +94,7 @@ function Modal() {
 
                 <div className="flex item-center px-1.5 py-2 border-b border-gray-100">
                   <div className="hoverAnimation w-9 h-9 flex items-center justify-center xl:px-0"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => setIsUpdatePostOpen(false)}
                   >
                     <XIcon className="h-[22px] text-gray-700"/>
 
@@ -100,63 +105,26 @@ function Modal() {
 
                 <div className="flex px-4 pt-5 pb-2.5 sm:px-6">
                   <div className="w-full">
-                    <div className="text-[#6e767d] flex gap-x-3 relative">
-                      <span className="w-0.5 h-full z-[-1] absolute left-5 top-11 bg-gray-600"></span>
-                      <img src={post?.userImg} alt="" className="h-11 w-11 rounded-full"/>
-
-                      <div>
-                        <div className="inline-block group">
-                          <h4 className="font-bold text-[15px]
-                          sm:text-base text-gray-700 inline-block">{post?.username} </h4>
-                          <span className="ml-1.5 text-sm sm:text-[15px]">@{post?.tag}</span>
-                         
-                        </div>
-                        {" "}
-                          .{" "}
-                          <span className="hover:underline text-sm sm:text-[15px]">
-                            <Moment  fromNow>
-                                {post?.timestamp?.toDate()}
-                            </Moment>
-                            </span>
-                            <p className="text-gray-900 text-[15px] sm:text-base">{post?.text}</p>
-                      </div>
-                    </div>
-                    <div className="mt-7 flex space-x-3 w-full">
-                      <img src={session.user.image} alt="" className="h-11 w-11 rounded-full"/>
+                   
+                    <div className=" flex item-center space-x-3 w-full">
                       <div className="flex-grow mt-2">
                         <textarea
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
+                          value={post?.text}
+                          onChange={(e) => setText(e.target.value)}
                           placeholder="Replay !!"
                           rows="2"
                           className="bg-transparent outline-none text-gray-900 text-lg placeholder-gray-500
                           tracking-wide w-full min-h-[80px]"/>
 
 <div className="flex items-center justify-between pt-2.5">
-                        <div className="flex items-center">
-                          <div className="icon">
-                            <PhotographIcon className="text-[#1d9bf0] h-[22px]" />
-                          </div>
-
-                          <div className="icon rotate-90">
-                            <ChartBarIcon className="text-[#1d9bf0] h-[22px]" />
-                          </div>
-
-                          <div className="icon">
-                            <EmojiHappyIcon className="text-[#1d9bf0] h-[22px]" />
-                          </div>
-
-                          <div className="icon">
-                            <CalendarIcon className="text-[#1d9bf0] h-[22px]" />
-                          </div>
-                        </div>
+                   
                         <button
                           className="bg-[#1d9bf0] text-white rounded-full px-4 py-1.5 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default"
                           type="submit"
-                          onClick={sendComment}
-                          disabled={!comment.trim()}
+                        //   onClick={sendComment}
+                          disabled={!text.trim()}
                         >
-                          Reply
+                          Update
                         </button>
                       </div>
 
@@ -179,7 +147,7 @@ function Modal() {
   )
 
 }
-export default Modal;
+export default UpdatePost;
 
 
 

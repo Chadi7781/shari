@@ -9,6 +9,11 @@ export const  modalState= atom({
     default: false,
 })
 
+export const updatePostState = atom({
+    key:'updatePostState',
+    default: false,
+})
+
 
 export const postIdState = atom({
     key: 'postIdState',

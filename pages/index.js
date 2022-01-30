@@ -8,11 +8,16 @@ import Welcome from '../components/welcome/Welcome'
 import { getSession, getProviders, useSession } from 'next-auth/react';
 import Login from '../components/Login/Login';
 import Modal from '../components/modal/Modal'
-
+import { updatePostState,modalState } from '../atoms/modalAtom';
+import {useRecoilState} from 'recoil';
+import UpdatePost from '../components/post/UpdatePost';
+import Widgets from '../components/widget/Widgets';
 export default function Home({ trendingResults, followResults, providers }) {
 
   const { data: session } = useSession();
 
+  const [isOpen, setIsOpen] = useRecoilState(modalState)
+  const [isUpdatePostOpen,setIsUpdatePostOpen] = useRecoilState(updatePostState)
   if (!session) return <Login providers={providers} />
 
   return (
@@ -25,8 +30,11 @@ export default function Home({ trendingResults, followResults, providers }) {
       <main className="bg-white min-h-screen flex max-w-[1500px] mx-auto">
         <Sidebar />
         <Feed />
+        <Widgets trendingResults={trendingResults} followResults = {followResults}/>
 
-        <Modal />
+        {isOpen && <Modal />}
+        {isUpdatePostOpen && <UpdatePost/>}
+
       </main>
     </div>
   );
@@ -48,8 +56,8 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      trendingResults,
-      followResults,
+       trendingResults,
+       followResults,
       providers,
       session,
     }

@@ -5,20 +5,20 @@ import { useSession} from 'next-auth/react';
 
 import {
     addDoc,
-    collection,
+    collection,orderBy,
     doc,deleteDoc,setDoc,
     serverTimestamp,
-    updateDoc,
-} from '@firebase/firestore';
+    onSnapshot,
+    updateDoc,query,
+} from 'firebase/firestore';
 
-import {onSnapshot} from '@firebase/firestore'
 import {db,storage} from '../../firebase';
 import { useRouter } from 'next/router'
 import {useState, useEffect} from 'react';
 import Moment from "react-moment";
 import { useRecoilState} from 'recoil';
 
-import {modalState,postIdState} from '../../atoms/modalAtom';
+import {modalState,postIdState,updatePostState} from '../../atoms/modalAtom';
 function Post({id,post, postPage}) {
     const router = useRouter()
 
@@ -28,6 +28,7 @@ function Post({id,post, postPage}) {
     const [postId,setPostId] = useRecoilState(postIdState);
     
     const [isOpen, setIsOpen] = useRecoilState(modalState);
+    const [isUpdatePostOpen, setIsUpdatePostOpen] = useRecoilState(updatePostState);
 
     const [comments, setComments] = useState([]);
 
@@ -35,6 +36,17 @@ function Post({id,post, postPage}) {
 
     const [liked, setLiked] = useState(false);
 
+
+
+    useEffect(
+        () => onSnapshot(query(collection(db,"posts",id,"comments"), orderBy("timestamp","desc")
+        ),
+    (snapshot) => {
+        setComments(snapshot.docs)
+    }),
+    [db,id]
+        );
+    
     const deletePost = (e) => {
         
         e.stopPropagation();// t7ebslna onclick fi div ly fiha method deletePost
@@ -45,27 +57,25 @@ function Post({id,post, postPage}) {
     useEffect(() => setLiked(likes.findIndex((like) => like.id === session.user?.uid)!== -1),
     
     [likes])
-
-    // useEffect(() => 
-    //     onSnapshot(collection(db,"posts",id,"likes"), (snapshot) =>       
-    //         (setLikes(snapshot.docs))
-    //     ),
-    // [db, id]);
+   
   
    
 
 
-     //LIKE POST =========================================>   
-     const likePost = async() => {
-        if(liked) {
-            await  deleteDoc(doc(db,"posts",id,"likes",session.user?.uid))
-            
-        }else {
-            await setDoc(doc(db,"posts",id,"likes",session.user?.uid),{
-                username: session.user.name
+        //LIKE POST =========================================>   
+        const likePost = async() => {
+            if(liked) {
+                await  deleteDoc(doc(db,"posts",id,"likes",session.user?.uid))
                 
-            })
-        }
+            }else {
+                await setDoc(doc(db,"posts",id,"likes",session.user?.uid),{
+                    username: session.user.name,
+                    timestamp:   serverTimestamp()
+                    
+                })
+            }
+            
+            
         
         
     }
@@ -78,11 +88,17 @@ function Post({id,post, postPage}) {
 
     }
 
+    const updatePost =(e ) => {
+        e.stopPropagation();//t7abslna onclick event fi div ely fiha chatPost method
+        setPostId(id);
+        setIsUpdatePostOpen(true);        
+    }
 
     return (
         
         <div className="p-3 flex cursor-pointer
-        border-b border-gray-20 0">
+        border-b border-gray-200"
+        onClick={() => router.push(`/${id}`)}>
             {!postPage && <img src={post?.userImg } alt=""
             
             className="h-11 w-11 rounded-full mr-4"
@@ -126,23 +142,22 @@ function Post({id,post, postPage}) {
                             )}
 
 
-                                          <img src={`${post?.image}`} alt=""
-                            className="rounded-2xl max-h-[700px] object-cover mr-2"></img>       
-
 
                     </div>
-                    <div className="icon group ml-auto">
+                    <div className="icon group ml-auto"          
+                                   onClick={(e) =>updatePost(e)}>
+                        
                         <DotsHorizontalIcon className="h-5 text-[#6e767d] group-hover:text-[#1d9bf0]"/> 
                     </div>
                 </div>
 
                 {postPage && (
-                    <p className="text-[#d9d9d9] text-[15px] sm:text-base mt-0.5">
+                    <p className="text-gray-900 text-[15px] sm:text-base mt-0.5">
                         {post?.text}
                     </p>
                 )}
 
-                {/* <img src={`${post?.image}`} alt=""className="rounded-2xl max-h-[700px] object-cover mr-2"/>  */}
+               <img src={`${post?.image}`} alt=""className="rounded-2xl max-h-[700px] object-cover mr-2"/>  
                 <div className={`text-[#6e767d] flex justify-between w-10/12 ${postPage && "mx-auto" }` }>
 
 
