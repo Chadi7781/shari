@@ -1,6 +1,6 @@
 import { ChartBarIcon, ChatIcon, DotsHorizontalIcon ,HeartIcon,ShareIcon,SwitchHorizontalIcon
     
-    ,HeartIcon ,TrashIcon} from "@heroicons/react/outline"
+     ,TrashIcon} from "@heroicons/react/outline"
 import { useSession} from 'next-auth/react';
 
 import {
